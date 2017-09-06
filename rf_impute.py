@@ -6,8 +6,8 @@ from sklearn.ensemble import RandomForestRegressor
 def RFImputer(Ximp):
     """Based on the missForest package in R.
 
-    Currently only supports continuous features. Also, please note that this
-    is a work in progress."""
+    Currently only supports continuous features. Categorical features will
+    be supported soon. Also, please note that this is a work in progress."""
 
     mask = np.isnan(Ximp)
     missing_rows, missing_cols = np.where(mask)
