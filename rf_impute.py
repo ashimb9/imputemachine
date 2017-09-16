@@ -65,7 +65,7 @@ def RFImputer(Ximp, categorical=None):
             (Ximp_old[:, continuous] - Ximp[:, continuous]) ** 2) / np.sum(
             (Ximp[:, continuous]) ** 2)
         gamma_new_cat = np.sum(
-            Ximp_old[:, categorical] != Ximp[:, categorical], axis=0) / np.sum(
+            Ximp_old[:, categorical] != Ximp[:, categorical]) / np.sum(
             mask[:, categorical])
 
         print("Iteration:", iter)
