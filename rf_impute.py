@@ -11,7 +11,8 @@ def RFImputer(Ximp, categorical=None):
 
     mask = np.isnan(Ximp)
     missing_rows, missing_cols = np.where(mask)
-    continuous = np.setdiff1d(list(range(Ximp.shape[1])), categorical)
+    col_index = np.arange(Ximp.shape[1])
+    continuous = np.setdiff1d(col_index, categorical)
 
     # MissForest Algorithm
     # 1. Make initial guess for missing values
@@ -29,9 +30,7 @@ def RFImputer(Ximp, categorical=None):
     gamma_new_cat = 0
     gamma_old = np.inf
     gamma_old_cat = np.inf
-    col_index = np.arange(Ximp.shape[1])
     model_rf = RandomForestRegressor(random_state=0, n_estimators=1000)
-    # TODO: Update while condition for categorical vars
     while (gamma_new < gamma_old or gamma_new_cat < gamma_old_cat) and iter < \
             max_iter:
         # added
@@ -42,12 +41,12 @@ def RFImputer(Ximp, categorical=None):
             gamma_old_cat = gamma_new_cat
         # 5. loop
         for s in k:
-            s_prime = np.delete(col_index, s)
+            s_prime = np.setdiff1d(col_index, s)
             obs_rows = np.where(~mask[:, s])[0]
             mis_rows = np.where(mask[:, s])[0]
             yobs = Ximp[obs_rows, s]
-            xobs = Ximp[np.ix_(obs_rows, s_prime)]
-            xmis = Ximp[np.ix_(mis_rows, s_prime)]
+            xobs = Ximp[obs_rows, :][:, s_prime]
+            xmis = Ximp[mis_rows, :][:, s_prime]
             # 6. Fit a random forest
             model_rf.fit(X=xobs, y=yobs)
             # 7. predict ymis(s) using xmis(x)
