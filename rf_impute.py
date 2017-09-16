@@ -2,7 +2,7 @@ from __future__ import division
 from __future__ import print_function
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
-
+from sklearn.ensemble import RandomForestClassifier
 
 def RFImputer(Ximp, categorical=None):
     """Based on the missForest package in R.
@@ -30,7 +30,8 @@ def RFImputer(Ximp, categorical=None):
     gamma_new_cat = 0
     gamma_old = np.inf
     gamma_old_cat = np.inf
-    model_rf = RandomForestRegressor(random_state=0, n_estimators=1000)
+    rf_reg = RandomForestRegressor(random_state=0, n_estimators=1000)
+    rf_clf = RandomForestClassifier(random_state=0, n_estimators=1000)
     while (gamma_new < gamma_old or gamma_new_cat < gamma_old_cat) and iter < \
             max_iter:
         # added
@@ -48,9 +49,15 @@ def RFImputer(Ximp, categorical=None):
             xobs = Ximp[obs_rows, :][:, s_prime]
             xmis = Ximp[mis_rows, :][:, s_prime]
             # 6. Fit a random forest
-            model_rf.fit(X=xobs, y=yobs)
-            # 7. predict ymis(s) using xmis(x)
-            ymis = model_rf.predict(xmis)
+            if k in continuous:
+                rf_reg.fit(X=xobs, y=yobs)
+                # 7. predict ymis(s) using xmis(x)
+                ymis = rf_reg.predict(xmis)
+            else:
+                rf_clf.fit(X=xobs, y=yobs)
+                # 7. predict ymis(s) using xmis(x)
+                ymis = rf_clf.predict(xmis)
+
             Ximp[mis_rows, s] = ymis
             # 8. update imputed matrix using predicted matrix ymis(s)
         # 9. Update gamma
