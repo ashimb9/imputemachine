@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import RandomForestClassifier
 
-def RFImputer(Ximp, categorical=None):
+def MissForest(Ximp, categorical=None):
     """Based on the missForest package in R.
 
     Please note that this is a work in progress."""
@@ -26,12 +26,10 @@ def RFImputer(Ximp, categorical=None):
     # 3. While not gamma_new < gamma_old and iter < max_iter do:
     iter = 0
     max_iter = 100
-    gamma_new = 0
-    gamma_new_cat = 0
-    gamma_old = np.inf
-    gamma_old_cat = np.inf
-    rf_reg = RandomForestRegressor(random_state=0, n_estimators=1000)
-    rf_clf = RandomForestClassifier(random_state=0, n_estimators=1000)
+    gamma_new = gamma_new_cat = 0
+    gamma_old = gamma_old_cat = np.inf
+    rf_reg = RandomForestRegressor(random_state=0, n_estimators=100)
+    rf_clf = RandomForestClassifier(random_state=0, n_estimators=100)
     while (gamma_new < gamma_old or gamma_new_cat < gamma_old_cat) and iter < \
             max_iter:
         # added
