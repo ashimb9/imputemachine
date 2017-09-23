@@ -5,7 +5,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import RandomForestClassifier
 
 def MissForest(Ximp, categorical=None):
-    """Based on the missForest package in R.
+    """Imputer based on the missForest package in R.
 
     Please note that this is a work in progress."""
 
